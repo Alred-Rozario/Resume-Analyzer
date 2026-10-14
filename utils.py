@@ -88,29 +88,32 @@ def get_api_key():
     return key.strip()
 
 def safe_generate(prompt):
-    """Helper to generate content using the new google-genai SDK."""
+    """Helper to generate content using the new google-genai SDK with automatic resilient model fallback."""
     api_key = get_api_key()
     if not api_key:
         return "⚠️ Error: Please configure your GEMINI_API_KEY inside the .env file in the project folder."
         
     import httpx
     try:
-        # Disable SSL verification to bypass potential corporate proxy/VPN teardowns
-        custom_httpx_client = httpx.Client(verify=False)
+        custom_httpx_client = httpx.Client(timeout=30.0, verify=False)
+        client = genai.Client(api_key=api_key, http_options={'httpx_client': custom_httpx_client})
         
-        # If the key provided is an OAuth token (e.g. from an enterprise Google Workspace)
-        if not api_key.startswith("AIza"):
-            custom_httpx_client.headers["Authorization"] = f"Bearer {api_key}"
-            # Pass a dummy key to bypass the SDK's internal missing-key validation
-            client = genai.Client(api_key="dummy_key", http_options={'httpx_client': custom_httpx_client})
-        else:
-            client = genai.Client(api_key=api_key, http_options={'httpx_client': custom_httpx_client})
-        
-        response = client.models.generate_content(
-            model='gemini-1.5-flash',
-            contents=prompt,
-        )
-        return response.text
+        # Test reliable available models in order of latency and availability
+        models_to_try = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemini-3.8-flash']
+        last_error = None
+        for m in models_to_try:
+            try:
+                response = client.models.generate_content(
+                    model=m,
+                    contents=prompt,
+                )
+                if response and response.text:
+                    return response.text
+            except Exception as model_err:
+                last_error = model_err
+                continue
+                
+        return f"Error communicating with AI: {str(last_error)}"
     except Exception as e:
         return f"Error communicating with AI: {str(e)}"
 
@@ -164,6 +167,102 @@ def generate_cover_letter(resume_text, job_desc):
     """
     return safe_generate(prompt)
 
+def discover_career_opportunities(resume_text):
+    """
+    Analyzes any resume across any discipline or stream (Commerce, Business Administration,
+    Arts, Science, Engineering, Law, Healthcare, etc.) without requiring a job description.
+    Identifies degree/background, core strengths, and suggests top suitable job roles.
+    """
+    prompt = f"""
+    You are a world-class Executive Career Advisor, Senior Talent Recruiter, and Career Strategist.
+    You evaluate candidates from ALL fields and academic backgrounds, including:
+    - Commerce & Finance (B.Com, M.Com, CA, CFA, Banking, Accounts, Taxation)
+    - Business & Management (BBA, MBA, Operations, Marketing, HR, Strategy, Sales)
+    - Arts, Humanities & Social Sciences (BA, Economics, Psychology, Journalism, Literature, Media)
+    - Science & Healthcare (B.Sc, M.Sc, Biotech, Nursing, Pharmacy, Medicine, Chemistry, Physics)
+    - Technology & Engineering (B.Tech, BE, BCA, MCA, Data Science, CS, Civil, Mechanical, Electrical)
+    - Law, Design, Hospitality, Media, and Vocational Certifications.
+
+    Analyze the candidate's resume below carefully:
+    ---
+    RESUME:
+    {resume_text}
+    ---
+
+    Provide a comprehensive, encouraging, and highly actionable Career Opportunity & Job Fit Report.
+    Format your response in beautiful GitHub Markdown following this exact structure:
+
+    ### 🎓 Candidate Profile Intelligence
+    - **Identified Domain / Industry:** [e.g. Commerce & Corporate Finance / Digital Marketing & Sales / Healthcare Administration / Software Engineering]
+    - **Detected Education & Background:** [e.g. Bachelor of Commerce (B.Com) / BBA in Marketing / B.Tech / Self-Taught Professional]
+    - **Experience Tier:** [e.g. Fresh Graduate / Early Career (1-3 yrs) / Mid-Senior (5+ yrs)]
+    - **Top Transferable Strengths:** [List 4-5 key skills, tools, or domain knowledge observed from the resume]
+
+    ---
+
+    ### 💼 Recommended Job Roles & Career Matches
+    Identify the TOP 4 most suitable and realistic job roles the candidate is capable of performing right now or with minor preparation.
+    For each role, format as:
+
+    #### 1. [Job Title] (e.g. Financial Analyst / Operations Associate / Digital Marketer / Business Development Associate)
+    - **Capability & Readiness Score:** [e.g. 92% Match]
+    - **Why You Are Qualified:** [Explain specific skills, coursework, projects, or background from their resume that qualify them]
+    - **Core Daily Responsibilities:** [Brief description of what they will do in this role]
+    - **High-Impact Skills to Level Up:** [1-2 high-value tools/certifications to learn to get hired faster and earn a higher salary, e.g. Advanced Excel, PowerBI, Tally ERP, Google Analytics, Salesforce, Python, etc.]
+    - **Estimated Market Compensation:** [Entry/standard market salary range for this role]
+
+    [Repeat for Role 2, 3, and 4]
+
+    ---
+
+    ### 🚀 Immediate Action Plan & Interview Readiness
+    - Provide 3 concrete, high-leverage steps the candidate can take this week to land interviews in their recommended roles (e.g., specific certifications, resume tweaks, portfolio items, or networking strategy).
+    """
+    return safe_generate(prompt)
+
+def evaluate_universal_resume(resume_text):
+    """
+    Evaluates resume health, detected keywords, and overall ATS completeness
+    when no job description is provided. Supports all fields (Commerce, Arts, Science, Tech, Business).
+    """
+    word_count = len(resume_text.split())
+    has_email = bool(re.search(r'[\w\.-]+@[\w\.-]+', resume_text))
+    has_phone = bool(re.search(r'(\+?\d[\d\s\-\(\)\.]{7,15}\d)', resume_text))
+    
+    text_lower = resume_text.lower()
+    sections = {
+        "Experience / Internships": bool(re.search(r'(experience|employment|work history|internship|projects|practical)', text_lower)),
+        "Education / Degree": bool(re.search(r'(education|degree|university|college|b\.?com|bba|b\.?tech|b\.?sc|ba|mba|diploma|school)', text_lower)),
+        "Skills / Competencies": bool(re.search(r'(skills|competencies|proficiencies|expertise|tools|abilities)', text_lower)),
+        "Contact Information": bool(has_email or has_phone)
+    }
+    
+    score = 45
+    if word_count >= 150: score += 10
+    if word_count >= 300: score += 10
+    if has_email: score += 10
+    if has_phone: score += 10
+    if sections["Education / Degree"]: score += 10
+    if sections["Skills / Competencies"]: score += 5
+    score = min(score, 95)
+    
+    vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2), max_features=25)
+    try:
+        clean = clean_text(resume_text)
+        vectorizer.fit([clean])
+        keywords = list(vectorizer.get_feature_names_out())
+    except Exception:
+        keywords = []
+        
+    return {
+        "readiness_score": score,
+        "word_count": word_count,
+        "has_email": has_email,
+        "has_phone": has_phone,
+        "sections": sections,
+        "extracted_keywords": [k.title() for k in keywords if len(k) > 2][:16]
+    }
+
 def create_pdf(text):
     if not FPDF:
         return b""
@@ -178,4 +277,5 @@ def create_pdf(text):
         pdf.multi_cell(0, 5, txt=line, align='L')
         
     return pdf.output(dest='S').encode('latin-1')
+
 

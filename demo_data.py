@@ -55,6 +55,106 @@ University of California, Berkeley | 2015 – 2019
 - **RAG-Docs Assistant:** High-performance retrieval-augmented search over PDF technical manuals using ChromaDB and hybrid vector search.
 """
 
+SAMPLE_COMMERCE_RESUME_TEXT = """# Priya Sharma
+**Bachelor of Commerce (B.Com Honours) — Finance & Accounting**  
+Mumbai, India | priya.sharma@email.com | +91 98201 44521 | linkedin.com/in/priyasharma-commerce
+
+---
+
+### Profile Summary
+Detail-oriented and analytical Commerce graduate with strong foundations in Financial Accounting, Auditing, Corporate Taxation, Financial Modeling, and Cost Analysis. Demonstrated internship experience in statutory audit support, ledger reconciliation, GST return filings, and advanced financial modeling in Microsoft Excel and Tally ERP.
+
+---
+
+### Core Competencies & Skills
+- **Accounting & Finance:** Financial Statement Analysis, General Ledger, Accounts Payable/Receivable, Variance Analysis, Budgeting
+- **Taxation & Compliance:** Goods & Services Tax (GST), TDS, Income Tax filing, Statutory Audit Documentation
+- **Software & Tools:** Advanced MS Excel (VLOOKUP, XLOOKUP, Pivot Tables, What-If Analysis), Tally Prime / ERP 9, QuickBooks, Power BI basics
+- **Soft Skills:** Analytical thinking, audit precision, cross-functional reporting, client communication
+
+---
+
+### Practical Experience & Internships
+
+#### Finance & Accounts Trainee | Apex Capital Advisory Services
+*January 2024 – June 2024 | Mumbai, India*
+- Assisted senior auditors in conducting quarterly financial audits for 14 mid-cap corporate clients, verifying $2.4M in balance sheet entries.
+- Performed weekly bank reconciliations, vendor ledger audits, and discrepancy resolutions across 350+ monthly invoice accounts.
+- Automated quarterly GST and TDS summary worksheets in MS Excel, reducing reporting preparation turnaround time by 30%.
+- Drafted comparative cash flow statements and ratio analysis decks used in executive board presentations.
+
+#### Accounting & Tax Intern | R.K. Mehta & Associates (Chartered Accountants)
+*June 2023 – November 2023 | Mumbai, India*
+- Processed 500+ journal vouchers and ledger entries in Tally Prime for retail and wholesale business clients.
+- Prepared tax computation working papers and supported documentation for annual corporate income tax returns.
+- Researched regulatory changes in tax deduction norms and drafted compliance briefing memos for client advisors.
+
+---
+
+### Education
+**Bachelor of Commerce (Honours) — Accounting & Finance**  
+St. Xavier's College, University of Mumbai | Graduated: 2024  
+*Academic Score: CGPA 8.7/10.0 (First Class with Distinction)*  
+*Key Coursework: Corporate Accounting, Management Accounting, Financial Management, Direct & Indirect Tax, Auditing*
+
+---
+
+### Certifications & Honors
+- **Advanced Financial Modeling & Valuation** — Corporate Finance Institute (CFI)
+- **Certified Tally Prime Professional** — National Institute of Financial Markets
+- **First Prize:** National Inter-Collegiate Commerce & Business Analytics Case Competition (2023)
+"""
+
+SAMPLE_BBA_RESUME_TEXT = """# Rahul Verma
+**Bachelor of Business Administration (BBA) — Marketing & Operations**  
+Bangalore, India | rahul.verma@email.com | +91 98450 77123 | linkedin.com/in/rahulverma-bba
+
+---
+
+### Profile Summary
+Enthusiastic and results-driven Business Administration graduate specializing in Marketing Strategy, Digital Campaign Management, Business Development, and Operations. Hands-on experience driving customer acquisition funnels, analyzing market trends, and coordinating B2B outreach across startup and corporate environments.
+
+---
+
+### Core Competencies
+- **Business & Strategy:** Market Research, Go-To-Market Strategy, Competitor Benchmarking, Operations Management
+- **Marketing & Growth:** Digital Marketing (SEO/SEM), Social Media Marketing, Meta Ads, Email Marketing, Content Strategy
+- **Tools & Platforms:** Google Analytics (GA4), HubSpot CRM, Salesforce basics, Canva, Advanced MS Excel, Notion
+- **Interpersonal:** Negotiation, B2B Client Presentation, Cross-functional Leadership, Agile Teamwork
+
+---
+
+### Work & Internship Experience
+
+#### Business Development & Marketing Associate | QuickScale Tech Solutions
+*September 2023 – April 2024 | Bangalore, India*
+- Managed outbound lead generation campaigns across LinkedIn and email, generating 140+ qualified enterprise B2B sales meetings.
+- Coordinated multi-channel digital campaigns on Meta and Google Ads, improving overall click-through rate (CTR) by 28%.
+- Built comprehensive market sizing and competitor intelligence reports for executive leadership ahead of Series A expansion.
+- Tracked pipeline conversion metrics in HubSpot CRM, establishing automated lead scoring workflows for the sales team.
+
+#### Operations & Brand Coordinator Intern | MetroRetail Brands
+*January 2023 – July 2023 | Bangalore, India*
+- Monitored regional distribution supply chain fulfillment rates across 28 retail partner stores, boosting on-time stock delivery to 96%.
+- Designed social media campaign assets and promotional materials that drove a 35% growth in Instagram follower engagement.
+- Spearheaded student campus ambassador initiative across 12 universities, onboarding 400+ new verified app subscribers.
+
+---
+
+### Education
+**Bachelor of Business Administration (BBA) — Marketing & Operations**  
+Christ University, Bangalore | Graduated: 2024  
+*Academic Score: CGPA 8.4/10.0*  
+*Key Coursework: Marketing Management, Consumer Behaviour, Operations & Supply Chain, Business Statistics, Human Resource Management*
+
+---
+
+### Certifications & Achievements
+- **Google Certified Digital Marketing & E-Commerce Specialist**
+- **HubSpot Inbound Marketing & Sales Certification**
+- **Vice President:** University Management & Entrepreneurship Association (2023-2024)
+"""
+
 SAMPLE_JOB_DESCRIPTION = """Role: Senior Full-Stack & AI Engineer
 Company: NextGen Intelligence Technologies
 Location: Remote (US / Global)
@@ -123,81 +223,206 @@ alex.morgan@email.com | +1 (555) 382-9011
 """
 
 SAMPLE_JOBS_CATALOG = [
+    # --- Finance & Accounting (Commerce / B.Com / M.Com) ---
     {
-        "id": "job_1",
+        "id": "job_fin_1",
+        "title": "Financial Analyst — Valuation & Planning",
+        "company": "Deloitte Advisory",
+        "location": "Mumbai, India / Hybrid",
+        "type": "Full-Time",
+        "salary": "₹8.5L - ₹14.0L / $85k - $115k",
+        "match": 93,
+        "category": "Finance & Accounting",
+        "tags": ["Financial Modeling", "MS Excel", "Variance Analysis", "B.Com", "Valuation"],
+        "description": "Analyze corporate financial statements, build DCF and LBO forecast models, track monthly P&L variances, and draft executive investor presentations."
+    },
+    {
+        "id": "job_fin_2",
+        "title": "Senior Tax & Statutory Audit Associate",
+        "company": "KPMG Global Services",
+        "location": "Bangalore, India",
+        "type": "Full-Time",
+        "salary": "₹7.5L - ₹12.5L",
+        "match": 90,
+        "category": "Finance & Accounting",
+        "tags": ["GST", "Statutory Audit", "Tally Prime", "Taxation", "Ledger Audit"],
+        "description": "Lead statutory audit verification for multi-national accounts. Oversee GST compliance, TDS reconciliations, and quarterly tax filings."
+    },
+    {
+        "id": "job_fin_3",
+        "title": "Corporate Treasury & Accounts Executive",
+        "company": "HDFC Bank Corporate Banking",
+        "location": "Delhi NCR, India",
+        "type": "Full-Time",
+        "salary": "₹6.5L - ₹10.5L",
+        "match": 88,
+        "category": "Finance & Accounting",
+        "tags": ["Banking", "Cash Flow", "Accounts Payable", "ERP", "MIS Reporting"],
+        "description": "Manage day-to-day liquidity positioning, debt covenant reporting, vendor disbursement approvals, and corporate treasury transactions."
+    },
+
+    # --- Business, Operations & Strategy (BBA / MBA) ---
+    {
+        "id": "job_biz_1",
+        "title": "Business Development & Partnerships Lead",
+        "company": "Razorpay Enterprise",
+        "location": "Bangalore, India / Remote",
+        "type": "Full-Time",
+        "salary": "₹10.0L - ₹16.0L + Incentives",
+        "match": 92,
+        "category": "Business & Strategy",
+        "tags": ["B2B Sales", "Client Acquisition", "HubSpot", "Negotiation", "BBA"],
+        "description": "Drive high-velocity B2B merchant partnerships. Build pipeline outreach, deliver consultative product demos, and negotiate contract renewals."
+    },
+    {
+        "id": "job_biz_2",
+        "title": "Operations & Supply Chain Associate",
+        "company": "Flipkart Supply Chain",
+        "location": "Hyderabad, India",
+        "type": "Full-Time",
+        "salary": "₹7.0L - ₹11.0L",
+        "match": 89,
+        "category": "Business & Strategy",
+        "tags": ["Supply Chain", "Inventory Management", "Process Optimization", "Excel"],
+        "description": "Optimize regional fulfillment logistics and distribution bottlenecks. Analyze warehouse SLA metrics and implement automated vendor tracking."
+    },
+
+    # --- Marketing, Growth & Digital Media (BBA / Arts / Mass Comm) ---
+    {
+        "id": "job_mkt_1",
+        "title": "Digital Marketing & Performance Growth Manager",
+        "company": "Zomato Growth Labs",
+        "location": "Gurgaon, India / Hybrid",
+        "type": "Full-Time",
+        "salary": "₹9.0L - ₹15.0L",
+        "match": 91,
+        "category": "Marketing & Media",
+        "tags": ["Meta Ads", "Google Ads", "GA4", "SEO/SEM", "Content Strategy"],
+        "description": "Spearhead high-ROI user acquisition campaigns across search and paid social. Manage monthly ad budgets and conduct deep-dive attribution modeling."
+    },
+    {
+        "id": "job_mkt_2",
+        "title": "Brand Strategist & Communications Specialist",
+        "company": "Ogilvy & Mather",
+        "location": "Mumbai, India",
+        "type": "Full-Time",
+        "salary": "₹8.0L - ₹13.0L",
+        "match": 87,
+        "category": "Marketing & Media",
+        "tags": ["Brand Positioning", "Copywriting", "Public Relations", "Social Media"],
+        "description": "Craft brand storytelling narratives and omni-channel PR campaigns. Collaborate with creative directors to launch national consumer campaigns."
+    },
+
+    # --- Human Resources & People Operations (BBA HR / Psychology / Arts) ---
+    {
+        "id": "job_hr_1",
+        "title": "Human Resources Generalist & Talent Acquisition",
+        "company": "McKinsey & Company",
+        "location": "Gurgaon, India",
+        "type": "Full-Time",
+        "salary": "₹8.5L - ₹14.0L",
+        "match": 91,
+        "category": "HR & People",
+        "tags": ["Recruitment", "Employee Engagement", "HR Policies", "HRIS", "Onboarding"],
+        "description": "Drive end-to-end talent acquisition pipelines across business and advisory practices. Facilitate performance appraisal cycles and employee retention initiatives."
+    },
+
+    # --- Healthcare, Life Sciences & Pharmacy (B.Sc / Pharma) ---
+    {
+        "id": "job_sci_1",
+        "title": "Clinical Research & Regulatory Affairs Associate",
+        "company": "Sun Pharma Global",
+        "location": "Ahmedabad, India",
+        "type": "Full-Time",
+        "salary": "₹7.5L - ₹12.0L",
+        "match": 89,
+        "category": "Healthcare & Science",
+        "tags": ["Clinical Trials", "GCP Compliance", "Pharmacovigilance", "B.Sc / B.Pharm"],
+        "description": "Coordinate phase-II and III clinical trial data verification, review investigator dossiers, and ensure FDA/CDSCO statutory compliance."
+    },
+
+    # --- Technology, AI & Engineering (B.Tech / BCA / CS) ---
+    {
+        "id": "job_tech_1",
         "title": "Senior Full-Stack & AI Engineer",
         "company": "NextGen Intelligence",
-        "location": "Remote (US)",
+        "location": "Remote (Global)",
         "type": "Full-Time",
-        "salary": "$165k - $210k",
+        "salary": "$165k - $210k / ₹35L - ₹55L",
         "match": 94,
-        "category": "AI / Data",
-        "tags": ["Python", "FastAPI", "React", "AWS", "LLMs"],
+        "category": "AI & Tech",
+        "tags": ["Python", "FastAPI", "React", "AWS", "LLMs", "B.Tech"],
         "description": "Lead the architectural evolution of our workforce AI copilot. Build reactive frontends with React and high-throughput Python microservices on AWS."
     },
     {
-        "id": "job_2",
-        "title": "Staff Machine Learning Engineer",
-        "company": "OpenAI Partner Labs",
-        "location": "San Francisco, CA (Hybrid)",
-        "type": "Full-Time",
-        "salary": "$210k - $290k",
-        "match": 91,
-        "category": "AI / Data",
-        "tags": ["PyTorch", "Distributed Systems", "Python", "RAG"],
-        "description": "Design and train domain-adapted embeddings and fine-tuned models. Optimize inference pipelines for low latency and high scalability."
-    },
-    {
-        "id": "job_3",
+        "id": "job_tech_2",
         "title": "Lead Cloud Infrastructure Architect",
         "company": "Datadog",
         "location": "Remote",
         "type": "Full-Time",
         "salary": "$175k - $225k",
         "match": 88,
-        "category": "Engineering",
+        "category": "AI & Tech",
         "tags": ["Kubernetes", "Terraform", "AWS", "Docker"],
         "description": "Architect multi-region Kubernetes clusters and automated CI/CD deployment pipelines. Ensure 99.99% availability for enterprise monitoring."
     },
     {
-        "id": "job_4",
+        "id": "job_tech_3",
         "title": "Senior Data Scientist (GenAI)",
         "company": "Spotify",
-        "location": "New York, NY",
+        "location": "New York, NY / Remote",
         "type": "Full-Time",
         "salary": "$150k - $190k",
         "match": 85,
-        "category": "AI / Data",
+        "category": "AI & Tech",
         "tags": ["SQL", "Python", "MLflow", "BigQuery"],
         "description": "Leverage semantic discovery and audio embedding models to deliver personalized recommendations to over 500 million active listeners."
     },
+
+    # --- Product, Design & Creative ---
     {
-        "id": "job_5",
-        "title": "Staff Frontend Engineer",
-        "company": "Vercel",
-        "location": "Remote",
-        "type": "Full-Time",
-        "salary": "$160k - $200k",
-        "match": 82,
-        "category": "Engineering",
-        "tags": ["Next.js", "TypeScript", "Tailwind", "React"],
-        "description": "Build high-performance, accessible developer tools and dashboard experiences with cutting-edge React Server Components."
-    },
-    {
-        "id": "job_6",
-        "title": "Principal Product Manager (AI Platform)",
+        "id": "job_prod_1",
+        "title": "Principal Product Manager",
         "company": "Figma",
-        "location": "San Francisco, CA",
+        "location": "San Francisco, CA / Remote",
         "type": "Full-Time",
         "salary": "$190k - $250k",
         "match": 89,
-        "category": "Product",
-        "tags": ["Product Strategy", "LLM UX", "Roadmap", "Analytics"],
+        "category": "Product & Design",
+        "tags": ["Product Strategy", "UX", "Roadmap", "Analytics"],
         "description": "Define the vision for generative design workflows. Partner with engineering to shape human-in-the-loop AI interfaces."
     }
 ]
 
 SAMPLE_HISTORY_ENTRIES = [
+    (
+        "Career Discovery",
+        """### 🎓 Candidate Profile Intelligence
+- **Identified Domain / Industry:** Commerce & Corporate Finance / Auditing
+- **Detected Education & Background:** Bachelor of Commerce (B.Com Honours) in Accounting & Finance
+- **Experience Tier:** Early Career (1-2 yrs Practical Training & Trainee Experience)
+- **Top Transferable Strengths:** Financial Statement Analysis, Tally Prime, GST Compliance, Advanced Excel, Statutory Audit Verification
+
+---
+
+### 💼 Recommended Job Roles & Career Matches
+
+#### 1. Financial Analyst — Planning & Reporting
+- **Capability & Readiness Score:** 94% Match
+- **Why You Are Qualified:** Robust foundation in ratio analysis, financial modeling, and cash flow statement preparation from both coursework and practical audit experience.
+- **Core Daily Responsibilities:** Evaluate revenue drivers, perform budget variance reconciliations, and prepare executive management decks.
+- **High-Impact Skills to Level Up:** Power BI, Tableau, Advanced DCF valuation models.
+- **Estimated Market Compensation:** ₹7,50,000 - ₹12,00,000 / $75,000 - $95,000
+
+#### 2. Corporate Tax & Statutory Audit Associate
+- **Capability & Readiness Score:** 91% Match
+- **Why You Are Qualified:** Direct hands-on experience handling GST summaries, TDS computations, and 500+ ledger audit vouchers.
+- **Core Daily Responsibilities:** Review trial balances, verify statutory tax compliance, and liaise with independent auditors.
+- **High-Impact Skills to Level Up:** SAP FICO module certification.
+- **Estimated Market Compensation:** ₹6,80,000 - ₹10,50,000
+""",
+        "2026-10-14 09:20:15"
+    ),
     (
         "Resume",
         SAMPLE_RESUME_TEXT,
